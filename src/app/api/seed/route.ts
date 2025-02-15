@@ -5,6 +5,9 @@ const prisma = new PrismaClient();
 export async function GET() {
   try {
 
+  await prisma.palette.deleteMany()
+  await prisma.category.deleteMany()
+
   
   const categories = [
     { name: "آسمانی" },
