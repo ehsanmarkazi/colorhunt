@@ -21,8 +21,8 @@ export async function GET(req: NextRequest) {
     const data = JSON.parse(fileContent);
 
     const filteredPalettes = data.palettes.filter((palette: any) =>
-      (palette.name?.toLowerCase().includes(query) || false) ||  // بررسی مقدار `name`
-      (palette.category?.toLowerCase().includes(query) || false) // بررسی مقدار `category`
+      (palette.name?.toLowerCase().includes(query) || false) ||  
+      (palette.category?.toLowerCase().includes(query) || false) 
     );
 
     return NextResponse.json({ palettes: filteredPalettes.slice(0, 10) });

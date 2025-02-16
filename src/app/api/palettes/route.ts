@@ -4,15 +4,14 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    // تنظیم مسیر به فایل palettes.json
+
     const filePath = path.join(process.cwd(), "src", "data", "palettes.json");
 
-    // بررسی وجود فایل
+
     if (!fs.existsSync(filePath)) {
       throw new Error(`File not found: ${filePath}`);
     }
 
-    // خواندن فایل و ارسال پاسخ
     const fileContent = fs.readFileSync(filePath, "utf-8");
     const res = JSON.parse(fileContent);
 
