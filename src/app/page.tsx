@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <ClientLayout>
 
-    <div className="w-full min-h-screen bg-[#f9f9f9] flex items-center justify-center py-10">
+    <div className="w-full min-h-screen bg-white flex items-center justify-center py-10">
       <PaletteGrid />
     </div>
     </ClientLayout>

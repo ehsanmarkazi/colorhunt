@@ -25,7 +25,7 @@ export default async function PalettePage({
      <ClientLayout>
 
     
-    <div className="flex flex-col justify-center items-center gap-5 py-10 bg-[#f9f9f9]">
+    <div className="w-full flex flex-col justify-center items-center gap-5 py-10 bg-white">
 
       <div className="max-w-3xl mx-auto text-center mb-8">
         <h1 className="text-4xl font-bold text-gray-900">{palette.name}</h1>

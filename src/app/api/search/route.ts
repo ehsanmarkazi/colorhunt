@@ -1,32 +1,36 @@
+import fs from "fs";
+import path from "path";
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma"; 
 
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const query = searchParams.get("query");
-
-  if (!query) {
-    return NextResponse.json({ palettes: [] });
-  }
-
   try {
- 
-    const palettes = await prisma.palette.findMany({
-      where: {
-        OR: [
-          { name: { contains: query, mode: "insensitive" } }, 
-          { category: { name: { contains: query, mode: "insensitive" } } }, 
-        ],
-      },
-      include: {
-        category: true, 
-      },
-      take: 10, 
-    });
+    const { searchParams } = new URL(req.url);
+    const query = searchParams.get("query")?.trim().toLowerCase() || "";
 
-    return NextResponse.json({ palettes });
+    if (!query) {
+      return NextResponse.json({ palettes: [] });
+    }
+
+    const filePath = path.join(process.cwd(), "src", "data", "palettes.json");
+
+    if (!fs.existsSync(filePath)) {
+      throw new Error(`File not found: ${filePath}`);
+    }
+
+    const fileContent = fs.readFileSync(filePath, "utf-8");
+    const data = JSON.parse(fileContent);
+
+    const filteredPalettes = data.palettes.filter((palette: any) =>
+      (palette.name?.toLowerCase().includes(query) || false) ||  // بررسی مقدار `name`
+      (palette.category?.toLowerCase().includes(query) || false) // بررسی مقدار `category`
+    );
+
+    return NextResponse.json({ palettes: filteredPalettes.slice(0, 10) });
   } catch (error) {
-    console.error("Error fetching palettes:", error);
-    return NextResponse.json({ error: "خطایی رخ داده است" }, { status: 500 });
+    console.error("❌ Error fetching palettes:", error);
+    return NextResponse.json(
+      { error: "خطایی رخ داده است" },
+      { status: 500 }
+    );
   }
 }

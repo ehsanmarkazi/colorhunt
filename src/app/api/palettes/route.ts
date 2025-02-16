@@ -1,14 +1,28 @@
-import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import fs from "fs";
+import path from "path";
+import { NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
-    const palettes = await prisma.palette.findMany({
-      include: { category: true },
-    });
+    // تنظیم مسیر به فایل palettes.json
+    const filePath = path.join(process.cwd(), "src", "data", "palettes.json");
 
-    return NextResponse.json(palettes, { status: 200 });
+    // بررسی وجود فایل
+    if (!fs.existsSync(filePath)) {
+      throw new Error(`File not found: ${filePath}`);
+    }
+
+    // خواندن فایل و ارسال پاسخ
+    const fileContent = fs.readFileSync(filePath, "utf-8");
+    const res = JSON.parse(fileContent);
+
+
+    return NextResponse.json(res.palettes);
   } catch (error) {
-    return NextResponse.json({ message: "خطایی رخ داد" }, { status: 500 });
+    console.error("Error reading JSON file:", error);
+    return NextResponse.json(
+      { error: "Failed to read palettes data" },
+      { status: 500 }
+    );
   }
 }
